@@ -27,6 +27,13 @@ fn create_file(path: &str) -> Result<File, std::io::Error> {
         .open(path)
 }
 
+fn get_year() -> String {
+    match std::env::var("AOC_YEAR") {
+        Ok(x) => x,
+        Err(_) => "2015".to_string(),
+    }
+}
+
 pub fn handle(day: Day, overwrite: bool) {
     let input_path = format!("data/inputs/{day}.txt");
     let example_path = format!("data/examples/{day}.txt");
@@ -40,8 +47,10 @@ pub fn handle(day: Day, overwrite: bool) {
         }
     };
 
+    let year = get_year();
     match file.write_all(
         MODULE_TEMPLATE
+            .replace("%YEAR_NUMBER%", &year)
             .replace("%DAY_NUMBER%", &day.into_inner().to_string())
             .as_bytes(),
     ) {
